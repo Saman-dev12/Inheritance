@@ -33,7 +33,7 @@ contract TimedInheritance {
         );
 
         uint256 unlockTimestamp = block.timestamp +
-            (_unlockTimeInYears * 1 days);
+            ((_unlockTimeInYears * 365) * 1 days);
 
         inheritances[msg.sender] = Inheritance({
             beneficiary: _beneficiary,
@@ -66,8 +66,7 @@ contract TimedInheritance {
         emit BeneficiaryUpdated(msg.sender, _newBeneficiary);
     }
 
-    function claim() external {
-        address creator = findCreator(msg.sender);
+    function claim(address creator) external {
         require(creator != address(0), "No inheritance found for beneficiary");
 
         Inheritance storage inheritance = inheritances[creator];
@@ -84,20 +83,6 @@ contract TimedInheritance {
 
         payable(msg.sender).transfer(amount);
         emit Claimed(msg.sender, amount);
-    }
-
-    function findCreator(address _beneficiary) internal view returns (address) {
-        for (uint160 i = 1; i < type(uint160).max; i++) {
-            address creator = address(i);
-            if (
-                inheritances[creator].beneficiary == _beneficiary &&
-                !inheritances[creator].claimed &&
-                inheritances[creator].amount > 0
-            ) {
-                return creator;
-            }
-        }
-        return address(0);
     }
 
     function getInheritanceDetails(

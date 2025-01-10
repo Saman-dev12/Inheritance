@@ -3,21 +3,21 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 
-import "src/Contract.sol";
+import "../src/FixedTime.sol";
 
 contract TestContract is Test {
-    Contract c;
+    SimpleInheritance c;
 
     function setUp() public {
-        c = new Contract();
+        c = new SimpleInheritance();
     }
 
-    function testBar() public {
-        assertEq(uint256(1), uint256(1), "ok");
-    }
+    function test_create() public {
+        address recipient = 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2;
+        uint256 amount = 10 ether;
+        c.createInheritance{value: amount}(recipient);
+        console.log(address(c).balance);
 
-    function testFoo(uint256 x) public {
-        vm.assume(x < type(uint128).max);
-        assertEq(x + x, x * 2);
+        assertEq(address(c).balance, amount, "Contract balance mismatch");
     }
 }

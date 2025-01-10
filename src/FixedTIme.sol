@@ -10,7 +10,7 @@ contract SimpleInheritance {
         bool claimed;
     }
 
-    uint256 public constant REQUIRED_PING_INTERVAL = 30 seconds;
+    uint256 public constant REQUIRED_PING_INTERVAL = 365 days;
 
     mapping(address => Inheritance) public inheritances;
 
@@ -28,6 +28,10 @@ contract SimpleInheritance {
         require(
             inheritances[msg.sender].amount == 0,
             "Inheritance already exists"
+        );
+        require(
+            inheritances[msg.sender].beneficiary == address(0),
+            "Inheritance exists"
         );
 
         inheritances[msg.sender] = Inheritance({
